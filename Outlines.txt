@@ -1,0 +1,29 @@
+train()
+    read in file
+    pre-process text (helper)
+    calculate n-gram possibilities
+        (generalize into helper method? Possibly customized to allow for uni/bi/tri selection?)
+        format output
+score()
+    read in file
+    pre-process text (helper)
+    calculate sentence probabilities
+        (generalize into helper method? Possibly customized to allow for uni/bi/tri selection?)
+    calculate perplexity (helper likely)
+    format output
+
+helpers
+
+    Pre_process() (partially started in Jessie's code)
+        (taken from instruction file as base)
+        # step 1: read in the data from the file as a chunk of text
+        # step 2: convert the text into a list of sentences, stripping
+        #newline characters (\n)
+        # step 3: represent each sentence as a list of tokens
+        # step 4: insert start and stop tokens
+        # step 5: return the list of lists
+
+    n-gram_prob()
+        (incorporate laplace smoothing. <UNK>ing here + sentence_prob? or in pre-process with train() + score() selection.
+
+
