@@ -10,13 +10,17 @@ n-gram
         read in file
         pre-process text (helper)
         calculate sentence probabilities
+            P_bigram(I am working.) = P(I | <s>) * P(am | I) * P(working | am) * P(</s> | working)
+
+            P_trigram(I am working.) = P(I |<s_1> <s_2>) * P(am | <s_2> I) * P(working | I am) * P(<s/_1> | am working) * P(<s/_2> | working <s/_1>)
+            What the sentence looks like (<s_1> <s_2> I am working <\s_1> <\s_2>)
             (generalize into helper method? Possibly customized to allow for uni/bi/tri selection?)
         calculate perplexity (helper likely)
         format output
 
 helpers
 
-    Pre_process() (partially started in Jessie's code)
+    Pre_process() (Finished)
         (taken from instruction file as base)
         # step 1: read in the data from the file as a chunk of text
         # step 2: convert the text into a list of sentences, stripping (I am working \n Hello there!) -> [I am working, Hello there!]
@@ -25,6 +29,8 @@ helpers
         # step 3: represent each sentence as a list of tokens [I am working, Hello there!] -> [[I, am, working], [Hello, there!]]
         # step 4: insert start and stop tokens [[I, am, working], [Hello, there!]] -> [[<s>, I, am, working, </s>], [<s>, Hello, there!, </s>]]
         # step 5: return the list of lists
+
+
 
     n-gram_prob()
         (incorporate laplace smoothing. <UNK>ing here + sentence_prob? or in pre-process with train() + score() selection.
