@@ -2,7 +2,7 @@ n-gram
     train()
         read in file (test file)
         pre-process text -> list of sentences (token form) (helper)
-        calculate n-gram possibilities
+        calculate n-gram probabilities
             (generalize into helper method? Possibly customized to allow for uni/bi/tri selection?)
         format output (n-gram + log_2(probability))
 
@@ -12,8 +12,8 @@ n-gram
         calculate sentence probabilities
             P_bigram(I am working.) = P(I | <s>) * P(am | I) * P(working | am) * P(</s> | working)
 
-            P_trigram(I am working.) = P(I |<s_1> <s_2>) * P(am | <s_2> I) * P(working | I am) * P(<s/_1> | am working) * P(<s/_2> | working <s/_1>)
-            What the sentence looks like (<s_1> <s_2> I am working <\s_1> <\s_2>)
+            P_trigram(I am working.) = P(I |<s_1> <s_2>) * P(am | <s_2> I) * P(working | I am) * P(<s/_1> | am working)
+            What the sentence looks like (<s_1> <s_2> I am working <\s_1>)
             (generalize into helper method? Possibly customized to allow for uni/bi/tri selection?)
         calculate perplexity (helper likely)
         format output
@@ -35,4 +35,11 @@ helpers
     n-gram_prob()
         (incorporate laplace smoothing. <UNK>ing here + sentence_prob? or in pre-process with train() + score() selection.
 
+
+    <UNK>ing
+        (post-processing version for train())
+            Iterate through the each word in the processed text
+            View occurances from vocab dictionary
+            if (self.vocab[token] not == 1):
+                replace with <UNK>
 
