@@ -1,5 +1,7 @@
 # !/usr/bin/python3
-
+import helper
+import math
+import string
 
 # TODO: Implement a Laplace-smoothed unigram model :)
 class LanguageModel:
@@ -7,17 +9,37 @@ class LanguageModel:
     def __init__(self):
         self.processed_text = []
         self.vocab = {} # {vocab;occurances}
-        self.unigram = {} # {unigram = vocab;probability = occurances + 1/total + |V|}
+        self.unigram = {} # {unigram = vocab;probability = occurances + 1/total + |V|
+        self.sentences = {} # {test_sentence;probability = product of its unigrams}
 
 
     def train(self, train_corpus):
-        self.processed_text = preprocess(train_corpus, 1) # process raw text file into list of (sentences) lists of words
-        self.vocab = count_tokens(self.processed_text)[1] # Add each word(token) to vocab dictionary and its # of occurences
-        total = count_tokens(self.processed_text)[0]
+        self.processed_text = helper.preprocess(train_corpus, 1, True) # process raw text file into list of (sentences) lists of words
+        self.vocab = helper.count_tokens(self.processed_text)[1] # Add each word(token) to vocab dictionary and its # of occurences
+        total = helper.count_tokens(self.processed_text)[0] # Track N
         for token in self.vocab:
-            self.unigram[token] = (self.vocab[token] + 1) / (total + len(self.vocab)) # Store token into unigram dictionary with its probability
-        print(self.unigram)
+            probability = math.log2((self.vocab[token] + 1) / (total + len(self.vocab)))
+            print(token + " " + str(round(probability, 3)))
+            self.unigram[token] = math.log2((self.vocab[token] + 1) / (total + len(self.vocab))) # Store token into unigram dictionary with its probability
+
 
 
     def score(self, test_corpus):
-        print('I am an unimplemented UNIGRAM score() method.')  # delete this!
+        self.processed_text = helper.preprocess(test_corpus, 1, False)
+        # process raw text file into list of (sentences) lists of words. [Hello, there, !] (punctuation preserved)
+        total = helper.count_tokens(self.processed_text)[0] # Track N
+        probabilities = []
+        for sentences in self.processed_text:
+            test_sentence = ""
+            probability = 1
+            for token in sentences:
+                test_sentence = test_sentence + token + " " # [Hello, there, !] -> "Hello " -> "Hello there " -> "Hello there ! "
+                if token not in string.punctuation:
+                    probability = probability * 2 ** self.unigram[token]
+            probabilities.append(math.log2(probability)) # stores log_2(probabilities)
+            print(test_sentence + str(round(math.log2(probability), 3))) # print output "sentence | probability"
+        H = 0
+        for probability in probabilities:
+            H =+ probability # Sum of (log_2(P(s_i))); probabilities is stored as log_2(P(s_i))
+        H = H * (-1 / total)
+        print("Perplexity = " + str(round(2 ** H, 3)))

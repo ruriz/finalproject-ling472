@@ -10,6 +10,7 @@ n-gram
         read in file
         pre-process text (helper)
         calculate sentence probabilities
+            P_unigram(I am working.) = P(I) * P(am) * P(working.)
             P_bigram(I am working.) = P(I | <s>) * P(am | I) * P(working | am) * P(</s> | working)
 
             P_trigram(I am working.) = P(I |<s_1> <s_2>) * P(am | <s_2> I) * P(working | I am) * P(<s/_1> | am working)
@@ -31,15 +32,12 @@ helpers
         # step 5: return the list of lists
 
 
-
-    n-gram_prob()
-        (incorporate laplace smoothing. <UNK>ing here + sentence_prob? or in pre-process with train() + score() selection.
-
-
-    <UNK>ing
+ <UNK>ing
         (post-processing version for train())
             Iterate through the each word in the processed text
             View occurances from vocab dictionary
             if (self.vocab[token] not == 1):
                 replace with <UNK>
+
+
 

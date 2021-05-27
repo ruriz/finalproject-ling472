@@ -1,21 +1,22 @@
 import string
 import re
 
-def preprocess(filepath, n):
+def preprocess(filepath, n, train):
     with open(filepath, 'r') as f:
 
         sentences = f.readlines() # creates a list of lines from the from [line 1, line 2, ...]
         output = []
         for sentence in sentences: # for each sentence (line) in the list [line 1, The children are all fond of him ." \n, ...]
             sentence = sentence.strip("\n") # Gets rid \n characters [line 1, The children are all fond of him .", ...]
-            sentence = sentence.translate(str.maketrans('', '', string.punctuation)) # remove punctuation [line 1, The children are all fond of him , ...]
+            if train:
+                sentence = sentence.translate(str.maketrans('', '', string.punctuation)) # remove punctuation [line 1, The children are all fond of him , ...]
             sentence = re.sub(pattern=r'[\s]+', repl = ' ', string=sentence) # remove extra white space [line 1, The children are all fond of him , ...]
             if n == 2:
                 sentence = ("<s> " + sentence + " </s>")
             if n == 3:
                 sentence = ("<s_1> <s_2> " + sentence + " </s>")
             output.append(sentence.split()) # splits sentence into a list of words [line 1, [The, children, are, all, fond, of, him] , ...]
-    print (output)
+    return (output)
 
 def count_tokens(sentences):
     # create a token dictionary
