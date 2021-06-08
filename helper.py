@@ -38,16 +38,30 @@ def count_unigrams(sentences):
     # token_dict = count_tokens(sentences)[1]
 
 def count_bigrams(sentences):
-	bigram_dictionary = {}
-	for sentence in sentences: # {probability of bigram = counts of bigram + 1/ count of the first word + vocabulary size}
-		prev = ""
-		for token in sentence: # {remember the second word; i.e. "I"}
-			if not prev == "":
+    bigram_dictionary = {}
+    for sentence in sentences: # {probability of bigram = counts of bigram + 1/ count of the first word + vocabulary size}
+        prev = ""
+        for token in sentence: # {remember the second word; i.e. "I"}
+            if not prev == "":
+                if prev + " " + token not in bigram_dictionary.keys():
+                    # put this bigram into the key
+                    bigram_dictionary[prev + " " + token] = 0
+                bigram_dictionary[prev + " " + token] += 1 
+            prev = token # {(remember first word) = first token; always used to keep track of the first "word" in the bigram}
+    return bigram_dictionary 
 
-				if prev + " " + token not in bigram_dictionary.keys():
-					# put this bigram into the key
-					bigram_dictionary[prev + " " + token] = 0
-				bigram_dictionary[prev + " " + token] += 1 
-			prev = token # {(remember first word) = first token; always used to keep track of the first "word" in the bigram}
-	return bigram_dictionary
-
+# add counts for how many words have 1 occurrence(equals to counts of <UNK>),
+# then process our processed texts convert the words to UNK
+def convert_UNK(vocab, processed_text):
+    for token in vocab.keys():
+        if vocab[token] == 1:
+            if '<UNK>' not in vocab.keys():
+                vocab['<UNK>'] = 0
+            vocab['<UNK>'] += 1
+            del vocab[token]
+    # go through the preprocessed text and convert 1 occurence word(now not in voab dict)
+    for sentences in processed_text:
+        for word in sentences:
+            if word not in vocab.keys():
+                word = "<UNK>"
+    return vocab, processed_text
