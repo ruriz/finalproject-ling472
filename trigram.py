@@ -17,7 +17,7 @@ class LanguageModel:
     def train(self, train_corpus):
         # added start and stop tokens
         preUNK_text = helper.preprocess(train_corpus, 3, True) # process raw text file into list of (sentences) lists of words
-        preUNK_vocab = helper.count_tokens(self.processed_text)[1] # Add each word(token) to vocab dictionary and its # of occurences
+        preUNK_vocab = helper.count_tokens(preUNK_text)[1] # Add each word(token) to vocab dictionary and its # of occurences
         self.vocab, self.processed_text = helper.convert_UNK(preUNK_vocab, preUNK_text)
         trigram_dictionary = {}
         # count bigram for denominator
@@ -35,9 +35,9 @@ class LanguageModel:
         self.trigram_occurrences = trigram_dictionary
         for trigram in self.trigram_occurrences.keys(): 
             bigram_words = trigram.split()[:2]
-            bigram_count = bigram_dictionary[bigram_words]
-            self.trigram_prob[trigram] = math.log2(self.trigram_occurrences[trigram] + 1) - \
-                                         math.log2(bigram_count + len(self.vocab))
+            bigram_count = bigram_dictionary[' '.join(bigram_words)]
+            self.trigram_prob[trigram] = math.log2(self.trigram_occurrences[trigram] + 1) - math.log2(bigram_count + len(self.vocab))
+            print(trigram + " " + str(self.trigram_prob[trigram]))
    
 
 
