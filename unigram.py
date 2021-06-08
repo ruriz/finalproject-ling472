@@ -27,7 +27,7 @@ class LanguageModel:
 
     def score(self, test_corpus):
         self.processed_text = helper.preprocess(test_corpus, 1, False)
-        # process raw text file into list of (sentences) lists of words. [Hello, there, !] (punctuation preserved)
+        n = helper.count_tokens(self.processed_text)[0]# process raw text file into list of (sentences) lists of words. [Hello, there, !] (punctuation preserved)
         probabilities = []
         for sentences in self.processed_text:
             test_sentence = ""
@@ -45,5 +45,5 @@ class LanguageModel:
         H = 0
         for probability in probabilities:
             H += probability # Sum of (log_2(P(s_i))); probabilities is stored as log_2(P(s_i))
-        H = H * (-1 / self.train_total)
+        H = H * (-1 / n)
         print("Perplexity = " + str(round(2 ** H, 3)))
