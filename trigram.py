@@ -6,7 +6,7 @@ import string
 
 # TODO: Implement a Laplace-smoothed trigram model :)
 class LanguageModel:
-
+    # Pre-processing elements include: <UNK>ing, ignoring punctuation, laplace smoothing, 2 start tokens, 1 stop token
     def __init__(self):
         self.processed_text = []
         self.vocab = {} # {vocab;occurances}

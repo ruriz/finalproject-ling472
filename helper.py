@@ -77,3 +77,11 @@ def convert_UNK(vocab, processed_text):
             if sentences[i] not in vocab.keys():
                 sentences[i] = "<UNK>"
     return vocab, processed_text
+
+def score_UNK(vocab, processed_text):
+    for sentences in processed_text:
+        for i in range(0, len(sentences)):
+            if sentences[i] not in string.punctuation:
+                if sentences[i] not in vocab.keys():
+                    sentences[i] = "<UNK>"
+    return processed_text

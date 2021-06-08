@@ -6,6 +6,7 @@ import string
 # TODO: Implement a Laplace-smoothed unigram model :)
 class LanguageModel:
 
+# Pre-processing elements include: <UNK>ing, ignoring punctuation, laplace smoothing
     def __init__(self):
         self.processed_text = []
         self.vocab = {} # {vocab;occurances}
@@ -15,20 +16,19 @@ class LanguageModel:
 
 
     def train(self, train_corpus):
-        self.processed_text = helper.preprocess(train_corpus, 1, True) # process raw text file into list of (sentences) lists of words
-        self.vocab = helper.count_tokens(self.processed_text)[1] # Add each word(token) to vocab dictionary and its # of occurences
-        self.processed_text = helper.convert_UNK(self.vocab,self.processed_text)[2]
-        self.vocab = helper.convert_UNK(self.vocab,self.processed_text)[1]
+        preUNK_text = helper.preprocess(train_corpus, 1, True)  # process raw text file into list of (sentences) lists of words
+        preUNK_vocab = helper.count_tokens(preUNK_text)[1]  # Add each word(token) to vocab dictionary and its # of occurences
+        self.vocab, self.processed_text = helper.convert_UNK(preUNK_vocab, preUNK_text)
         self.train_total = helper.count_tokens(self.processed_text)[0] # Track N
         for token in self.vocab:
-            probability = math.log2((self.vocab[token] + 1) / (self.train_total + len(self.vocab)))
+            probability = math.log2(self.vocab[token] + 1) - math.log2(self.train_total + len(self.vocab))
             print(token + " " + str(round(probability, 3)))
-            self.unigram[token] = math.log2((self.vocab[token] + 1) / (self.train_total + len(self.vocab))) # Store token into unigram dictionary with its probability
+            self.unigram[token] = probability # Store token into unigram dictionary with its probability
 
 
 
     def score(self, test_corpus):
-        self.processed_text = helper.preprocess(test_corpus, 1, False)
+        self.processed_text = helper.score_UNK(self.vocab, helper.preprocess(test_corpus, 1, False))
         n = helper.count_tokens(self.processed_text)[0]# process raw text file into list of (sentences) lists of words. [Hello, there, !] (punctuation preserved)
         probabilities = []
         for sentences in self.processed_text:
@@ -37,10 +37,7 @@ class LanguageModel:
             for token in sentences:
                 test_sentence = test_sentence + token + " " # [Hello, there, !] -> "Hello " -> "Hello there " -> "Hello there ! "
                 if token not in string.punctuation:
-                    if token in self.vocab.keys():
-                        probability += self.unigram[token]
-                    else:
-                        probability += (2 / (self.train_total + len(self.vocab)))
+                    probability += self.unigram[token]
             probabilities.append(probability) # stores log_2(probabilities)
             print(test_sentence + str(round(probability, 3))) # print output "sentence | probability"
         # perplexity
