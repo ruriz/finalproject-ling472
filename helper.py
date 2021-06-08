@@ -18,7 +18,7 @@ def preprocess(filepath, n, train):
             output.append(sentence.split()) # splits sentence into a list of words [line 1, [The, children, are, all, fond, of, him] , ...]
     return (output)
 
-def count_tokens(sentences):
+def count_unigrams(sentences):
     # create a token dictionary
     token_dict = {}
     # count how many tokens are there in the entire text
@@ -53,12 +53,6 @@ def count_bigrams(sentences):
 # add counts for how many words have 1 occurrence(equals to counts of <UNK>),
 # then process our processed texts convert the words to UNK
 def convert_UNK(vocab, processed_text):
-    #for i in range(0, len(vocab.keys()) + 1):
-    #    if vocab[vocab.keys[i]] == 1:
-    #       if '<UNK>' not in vocab.keys():
-    #            vocab['<UNK>'] = 0
-    #       vocab['<UNK>'] += 1
-    #        del vocab[vocab.keys[i]]
 
     # separate for loops implementation
     singulars = []
