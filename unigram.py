@@ -16,8 +16,8 @@ class LanguageModel:
 
     def train(self, train_corpus):
         self.processed_text = helper.preprocess(train_corpus, 1, True) # process raw text file into list of (sentences) lists of words
-        self.vocab = helper.count_tokens(self.processed_text)[1] # Add each word(token) to vocab dictionary and its # of occurences
-        self.train_total = helper.count_tokens(self.processed_text)[0] # Track N
+        self.vocab = helper.count_unigrams(self.processed_text)[1] # Add each word(token) to vocab dictionary and its # of occurences
+        self.train_total = helper.count_unigrams(self.processed_text)[0] # Track N
         for token in self.vocab:
             probability = math.log2((self.vocab[token] + 1) / (self.train_total + len(self.vocab)))
             print(token + " " + str(round(probability, 3)))

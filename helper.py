@@ -18,7 +18,7 @@ def preprocess(filepath, n, train):
             output.append(sentence.split()) # splits sentence into a list of words [line 1, [The, children, are, all, fond, of, him] , ...]
     return (output)
 
-def count_tokens(sentences):
+def count_unigrams(sentences):
     # create a token dictionary
     token_dict = {}
     # count how many tokens are there in the entire text
@@ -36,3 +36,18 @@ def count_tokens(sentences):
             token_dict[token] += 1
     return (N, token_dict)
     # token_dict = count_tokens(sentences)[1]
+
+def count_bigrams(sentences):
+	bigram_dictionary = {}
+	for sentence in sentences: # {probability of bigram = counts of bigram + 1/ count of the first word + vocabulary size}
+		prev = ""
+		for token in sentence: # {remember the second word; i.e. "I"}
+			if not prev == "":
+
+				if prev + " " + token not in bigram_dictionary.keys():
+					# put this bigram into the key
+					bigram_dictionary[prev + " " + token] = 0
+				bigram_dictionary[prev + " " + token] += 1 
+			prev = token # {(remember first word) = first token; always used to keep track of the first "word" in the bigram}
+	return bigram_dictionary
+
