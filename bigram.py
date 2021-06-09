@@ -10,7 +10,7 @@ class LanguageModel:
         self.processed_text = []
         self.vocab = {} # {vocab;occurances}
         self.bigram_occurrences = {} # {bigram; occurrences}
-        self.bigram_probabilities = {} # {bigram = vocab; probability = occurances + 1/total + |V|}
+        self.bigram_probabilities = {} # {bigram = vocab; probability = occurences + 1/total + |V|}
         self.scores = {} # {test_sentence;probability = product of its bigrams}
 
 
@@ -36,12 +36,12 @@ class LanguageModel:
                 if token not in string.punctuation:
                     if token in self.vocab.keys():
                     # if the word is in our list of bigrams, add the probability to the sentence probability
-                        probability += self.unigram[token]
+                        probability += self.bigram_probabilities[prev + " " + token]
                     else:
                         probability += (2 / (self.train_total + len(self.vocab)))
             probabilities.append(probability) # stores log_2(probabilities)
             print(test_sentence + str(round(probability, 3))) # print output "sentence | probability"
-        # perplexity
+        # perplexity:
         H = 0
         for probability in probabilities:
             H += probability # Sum of (log_2(P(s_i))); probabilities is stored as log_2(P(s_i))
