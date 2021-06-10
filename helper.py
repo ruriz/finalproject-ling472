@@ -1,15 +1,14 @@
 import string
 import re
 
-def preprocess(filepath, n, train):
+def preprocess(filepath, n):
     with open(filepath, 'r') as f:
 
         sentences = f.readlines() # creates a list of lines from the from [line 1, line 2, ...]
         output = []
         for sentence in sentences: # for each sentence (line) in the list [line 1, The children are all fond of him ." \n, ...]
             sentence = sentence.strip("\n") # Gets rid \n characters [line 1, The children are all fond of him .", ...]
-            if train:
-                sentence = sentence.translate(str.maketrans('', '', string.punctuation)) # remove punctuation [line 1, The children are all fond of him , ...]
+            sentence = sentence.translate(str.maketrans('', '', string.punctuation)) # remove punctuation [line 1, The children are all fond of him , ...]
             sentence = re.sub(pattern=r'[\s]+', repl = ' ', string=sentence) # remove extra white space [line 1, The children are all fond of him , ...]
             if n == 2:
                 sentence = ("<s> " + sentence + " </s>")
@@ -27,8 +26,9 @@ def count_unigrams(sentences):
     for sentence in sentences:
         # for each token in the sentence we are looking at
         for token in sentence:
-            N += 1
-            # if this is a new word
+            if token not in ["<s>", "<s_2>", "<s_1>"]:
+                N += 1
+                # if this is a new word
             if token not in token_dict.keys():
                 # put this word into the key
                 token_dict[token] = 0
@@ -53,7 +53,6 @@ def count_bigrams(sentences):
 # add counts for how many words have 1 occurrence(equals to counts of <UNK>),
 # then process our processed texts convert the words to UNK
 def convert_UNK(vocab, processed_text):
-
     # separate for loops implementation
     singulars = []
 
@@ -76,6 +75,6 @@ def score_UNK(vocab, processed_text):
     for sentences in processed_text:
         for i in range(0, len(sentences)):
             if sentences[i] not in string.punctuation:
-                if sentences[i] not in vocab.keys():
+                if sentences[i] not in vocab.keys() and sentences[i] not in ["<s>", "<s_2>", "<s_1>"]:
                     sentences[i] = "<UNK>"
     return processed_text
