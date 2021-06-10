@@ -14,7 +14,7 @@ class LanguageModel:
 
 
     def train(self, train_corpus):
-        preUNK_text = helper.preprocess(train_corpus, 1, True)  # process raw text file into list of (sentences) lists of words
+        preUNK_text = helper.preprocess(train_corpus, 1)  # process raw text file into list of (sentences) lists of words
         preUNK_vocab = helper.count_unigrams(preUNK_text)[1]  # Add each word(token) to vocab dictionary and its # of occurences
         self.vocab, self.processed_text = helper.convert_UNK(preUNK_vocab, preUNK_text)
         train_total = helper.count_unigrams(self.processed_text)[0] # Track N
@@ -26,7 +26,7 @@ class LanguageModel:
 
 
     def score(self, test_corpus):
-        self.processed_text = helper.score_UNK(self.vocab, helper.preprocess(test_corpus, 1, False))
+        self.processed_text = helper.score_UNK(self.vocab, helper.preprocess(test_corpus, 1))
         n = helper.count_unigrams(self.processed_text)[0]# process raw text file into list of (sentences) lists of words. [Hello, there, !] (punctuation preserved)
         probabilities = []
         for sentences in self.processed_text:

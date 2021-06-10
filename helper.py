@@ -75,6 +75,6 @@ def score_UNK(vocab, processed_text):
     for sentences in processed_text:
         for i in range(0, len(sentences)):
             if sentences[i] not in string.punctuation:
-                if sentences[i] not in vocab.keys() and sentences[i] not in ["<s>", "<s_2>", "<s_1>"]:
+                if sentences[i] not in vocab.keys():
                     sentences[i] = "<UNK>"
     return processed_text

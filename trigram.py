@@ -14,12 +14,14 @@ class LanguageModel:
         self.trigram_prob = {} # {trigram probabilities for each trigram (wi wi−2 wi−1)
         self.scores = {} 
         self.bigram_dictionary = {}
+        self.vocab_size = 0
 
     def train(self, train_corpus):
         # added start and stop tokens
         preUNK_text = helper.preprocess(train_corpus, 3) # process raw text file into list of (sentences) lists of words
         preUNK_vocab = helper.count_unigrams(preUNK_text)[1] # Add each word(token) to vocab dictionary and its # of occurences
         self.vocab, self.processed_text = helper.convert_UNK(preUNK_vocab, preUNK_text)
+        self.vocab_size = len(self.vocab.keys()) - 2
         trigram_dictionary = {}
         # count bigram for denominator
         self.bigram_dictionary = helper.count_bigrams(self.processed_text)
@@ -37,11 +39,9 @@ class LanguageModel:
         for trigram in self.trigram_occurrences.keys(): 
             bigram_words = trigram.split()[:2]
             bigram_count = self.bigram_dictionary[' '.join(bigram_words)]
-            self.trigram_prob[trigram] = math.log2(self.trigram_occurrences[trigram] + 1) - math.log2(bigram_count + len(self.vocab))
-            print(trigram + " " + str(self.trigram_prob[trigram]))
-        print(len(self.vocab))
-        print(self.vocab.keys())
-        print(preUNK_vocab)
+            self.trigram_prob[trigram] = math.log2(self.trigram_occurrences[trigram] + 1) - math.log2(bigram_count + self.vocab_size)
+            print(trigram + " " + str(round(self.trigram_prob[trigram], 3)))
+
 
 
 
@@ -68,9 +68,9 @@ class LanguageModel:
                     this_prob = 0
                     if bigram_to_search in self.bigram_dictionary.keys(): 
                         count_bigram_to_search = self.bigram_dictionary[bigram_to_search]
-                        this_prob = math.log2(1 / (count_bigram_to_search + len(self.vocab)))    
+                        this_prob = math.log2(1 / (count_bigram_to_search + self.vocab_size))    
                     else:
-                        this_prob = math.log2(1/(len(self.vocab)))
+                        this_prob = math.log2(1/self.vocab_size)
                     probability += this_prob
                     
             probabilities.append(probability) # stores log_2(probabilities)

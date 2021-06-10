@@ -12,6 +12,7 @@ class LanguageModel:
         self.bigram_occurrences = {} # {bigram; occurrences}
         self.bigram_probabilities = {} # {bigram = vocab; probability = occurances + 1/total + |V|}
         self.scores = {} # {test_sentence;probability = product of its bigrams}
+        self.vocab_size = 0
 
 
 
@@ -21,9 +22,10 @@ class LanguageModel:
         preUNK_text = helper.preprocess(train_corpus, 2)  # process raw text file into list of (sentences) lists of words
         preUNK_vocab = helper.count_unigrams(preUNK_text)[1]  # Add each word(token) to vocab dictionary and its # of occurences
         self.vocab, self.processed_text = helper.convert_UNK(preUNK_vocab, preUNK_text)
+        self.vocab_size = len(self.vocab.keys()) - 1
         self.bigram_occurrences = helper.count_bigrams(self.processed_text)
         for bigram in self.bigram_occurrences:
-        	self.bigram_probabilities[bigram] = math.log2(self.bigram_occurrences[bigram] + 1) - math.log2(self.vocab[bigram.split()[0]] + len(self.vocab)) # research scope within coding   
+        	self.bigram_probabilities[bigram] = math.log2(self.bigram_occurrences[bigram] + 1) - math.log2(self.vocab[bigram.split()[0]] + self.vocab_size) # research scope within coding   
         	print (bigram + " " + str(round(self.bigram_probabilities[bigram], 3)))
 
 
@@ -49,7 +51,7 @@ class LanguageModel:
                 # if the bigram is not known, calculate it as 1/(count(wi-1) + |V|)
                 else: 
                     count_prev = self.vocab[prev]
-                    this_prob = math.log2(1 / (count_prev + len(self.vocab)))
+                    this_prob = math.log2(1 / (count_prev + self.vocab_size))
                     probability += this_prob
             probabilities.append(probability) # stores log_2(probabilities)
             print(test_sentence + str(round(probability, 3))) # print output "sentence | probability"
@@ -58,5 +60,4 @@ class LanguageModel:
         for probability in probabilities:
             H += probability # Sum of (log_2(P(s_i))); probabilities is stored as log_2(P(s_i))
         H = H * (-1 / n)
-        print(n, H)
         print("Perplexity = " + str(round(2 ** H, 3)))
